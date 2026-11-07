@@ -1,0 +1,15 @@
+# Builds and runs this fork from source. In Portainer: Stacks > Add stack > Repository,
+# Compose path: compose.fork.yaml
+services:
+  uptime-kuma:
+    build:
+      context: .
+      dockerfile: docker/fork.dockerfile
+    image: uptime-kuma-fork:latest
+    restart: unless-stopped
+    volumes:
+      # Change to the volume/folder your current Uptime Kuma uses to keep your data
+      - ./data:/app/data
+    ports:
+      # <Host Port>:<Container Port>
+      - "3001:3001"
