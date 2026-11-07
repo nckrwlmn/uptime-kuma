@@ -723,7 +723,28 @@ export default {
                 }
             }
 
+            // Most recently changed state (up <-> down etc.) first
+            const change1 = this.lastStateChangeTime(m1.id);
+            const change2 = this.lastStateChangeTime(m2.id);
+            if (change1 !== change2) {
+                return change1 > change2 ? -1 : 1;
+            }
+
             return name1.localeCompare(name2);
+        },
+        /**
+         * Time of the latest state change among the loaded heartbeats of a monitor.
+         * @param {number} monitorID monitor id
+         * @returns {string} heartbeat time (sortable string), or "" if none found
+         */
+        lastStateChangeTime(monitorID) {
+            const beats = this.$root.heartbeatList[monitorID] || [];
+            for (let i = beats.length - 1; i >= 0; i--) {
+                if (beats[i].important || (i > 0 && beats[i - 1].status !== beats[i].status)) {
+                    return beats[i].time || "";
+                }
+            }
+            return "";
         },
     },
 };
